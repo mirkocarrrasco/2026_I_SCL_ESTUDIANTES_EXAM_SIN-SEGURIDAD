@@ -1,0 +1,36 @@
+package com.mitocode.orchestrator.service;
+
+import com.mitocode.orchestrator.client.shipment.restclient.ShipmentServiceV1RestClient;
+import com.mitocode.orchestrator.client.shipment.restclient.dto.ShipmentResponse;
+import com.mitocode.orchestrator.controller.dto.CreateOrderOrchestratorRequest;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Slf4j
+@Service
+@AllArgsConstructor
+public class ShipmentService {
+
+    private final ShipmentServiceV1RestClient client;
+
+    public ShipmentResponse assignCourier(UUID orderId, CreateOrderOrchestratorRequest createOrderRequest) {
+        log.info("Assigning courier for order ID: {}", orderId);
+        return client.assignCourier(orderId, createOrderRequest);
+    }
+
+    public ResponseEntity<Void> releaseCourier(UUID orderId) {
+        return client.releaseCourier(orderId);
+    }
+
+    public void startShipment(UUID orderId) {
+        client.startShipment(orderId);
+    }
+
+    public void completeShipment(UUID orderId) {
+        client.completeShipment(orderId);
+    }
+}

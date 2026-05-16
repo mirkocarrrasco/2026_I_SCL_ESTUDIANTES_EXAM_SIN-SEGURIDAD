@@ -1,0 +1,102 @@
+package com.mitocode.orchestrator.controller.docs;
+
+import com.mitocode.orchestrator.controller.dto.CreateOrderOrchestratorRequest;
+import com.mitocode.orchestrator.controller.dto.CreateOrderOrchestratorResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.UUID;
+
+@Tag(name = "Order Orchestrator")
+public interface IOrderOrchestratorController {
+
+    @Operation(
+            summary = "Create a new order",
+            description = "Creates a new order and initiates the order creation saga. Returns the created order ID.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Order created successfully",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = CreateOrderOrchestratorResponse.class/*,
+                                    example = "{\n" +
+                                            "  \"orderId\": \"123e4567-e89b-12d3-a456-426614174000\"\n" +
+                                            "}"*/
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(
+                    responseCode = "412",
+                    description = "Condition failed YYY (e.g., insufficient funds)",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(
+                    responseCode = "412",
+                    description = "Condition failed XXX (e.g., insufficient funds)",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ProblemDetail.class,
+                                    example = "{\"type\":\"https:\\/\\/mitocode.com\\/order\\/errors\",\"title\":\"Error trying to create an order\",\"status\":500,\"detail\":\"Saga compensation executed after failure\",\"instance\":\"\\/api\\/v1\\/order-orchestrator\\/orders\",\"order-id\":\"78cfb430-7be1-46f5-b1c4-eda6071b34cc\"}"
+                            )
+                    ))
+    })
+    @PostMapping
+    ResponseEntity<CreateOrderOrchestratorResponse> createOrder(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Request object for creating an order",
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = CreateOrderOrchestratorRequest.class/*,
+                                    example = "{\"customer\":{\"id\":9996,\"name\":\"Andres Gonzales\"},\"warehouse\":{\"id\":1000,\"name\":\"Burger Big Boy\"},\"card\":{\"id\":999},\"items\":[{\"product\":{\"id\":956,\"name\":\"Pizza Pepperoni\"},\"quantity\":2,\"description\":\"Extra queso\"},{\"product\":{\"id\":985,\"name\":\"Coca Cola\"},\"quantity\":1,\"description\":\"Sin hielo\"}],\"deliveryAddress\":{\"address\":\"Calle Los Angeles 706, Departamento 125\",\"latitude\":9636666,\"longitude\":698897,\"reference\":\"Al frente del parque de las leyendas puerta 5\"},\"shipmentCompany\":{\"id\":1000007},\"total\":109.25}"*/
+                            )
+                    )
+            )
+            @RequestBody CreateOrderOrchestratorRequest request,
+            @Parameter(name = "query", description = "Campo de busqueda especial", required = false)
+            String query
+    );
+
+    @Deprecated
+    @Operation(summary = "Start delivery for an order",
+            description = "Initiates the delivery process for the specified order ID.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/{orderId}/delivery/start")
+    ResponseEntity<Void> startShipment(@PathVariable UUID orderId);
+
+    @Operation(summary = "Complete delivery for an order",
+            description = "Marks the delivery as complete for the specified order ID and updates the order status accordingly.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/{orderId}/delivery/complete")
+    ResponseEntity<Void> completeDelivery(@PathVariable UUID orderId);
+}

@@ -1,0 +1,25 @@
+1777954265657	Rename type 'ApiRestaurantServiceV1Application'
+1777954268511	Rename type 'ApiRestaurantServiceV1ApplicationTests'
+1777954284010	Rename package 'com.mitocode.restaurant'
+1777954310108	Copy packages
+1777954443804	Delete element
+1777954448437	Delete element
+1777954468041	Copy compilation unit
+1777955956278	Delete element
+1778027792000	Delete element
+1778030166437	Rename package 'com.mitocode.inventory.producer.restaurant.order.released'
+1778039993131	Rename type 'Warehouse'
+1778040033247	Delete element
+1778040838408	Rename field 'restaurant'
+1778040904601	Delete element
+1778040935851	Rename field 'restaurant'
+1778041108217	Delete element
+1778041239292	Rename local variable 'restaurant'
+1778041650560	Rename type 'RestaurantOrderCancelledEvent'
+1778041657594	Rename type 'RestaurantOrderCancelledProducer'
+1778041750708	Rename type 'RestaurantOrderReservedEvent'
+1778041769577	Rename type 'RestaurantOrderReservedProducer'
+1778042006443	Rename local variable 'restaurantId'
+1778042039492	Rename local variable 'restaurantId'
+1778042085864	Rename method 'findByRestaurantIdAndId'
+1778124049905	Rename field 'producer'

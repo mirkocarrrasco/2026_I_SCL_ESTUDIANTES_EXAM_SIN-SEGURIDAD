@@ -1,0 +1,48 @@
+package com.mitocode.shipment.controller;
+
+import com.mitocode.shipment.controller.dto.AssignCourierRequest;
+import com.mitocode.shipment.controller.dto.ShipmentResponse;
+import com.mitocode.shipment.controller.dto.ReleaseCourierRequest;
+import com.mitocode.shipment.controller.mapper.ShipmentMapper;
+import com.mitocode.shipment.domain.Shipment;
+import com.mitocode.shipment.service.ShipmentService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/shipment")
+public class ShipmentController {
+
+    private final ShipmentService shipmentService;
+
+    public ShipmentController(ShipmentService shipmentService) {
+        this.shipmentService = shipmentService;
+    }
+
+    @PostMapping("/assign-courier")
+    public ResponseEntity<ShipmentResponse> assignDriver(@RequestBody AssignCourierRequest request) {
+        Shipment shipment = shipmentService.assignDriver(ShipmentMapper.toDomain(request));
+        return ResponseEntity.ok(ShipmentMapper.toResponse(shipment));
+    }
+
+    @PostMapping("/release-courier")
+    public ResponseEntity<ShipmentResponse> releaseDriver(@RequestBody ReleaseCourierRequest request) {
+        Shipment shipment = shipmentService.releaseDriver(request.orderId());
+        return ResponseEntity.ok(ShipmentMapper.toResponse(shipment));
+    }
+
+    @PostMapping("/{orderId}/start")
+    public ResponseEntity<ShipmentResponse> startShipment(@PathVariable UUID orderId) {
+        Shipment shipment = shipmentService.startShipment(orderId);
+        return ResponseEntity.ok(ShipmentMapper.toResponse(shipment));
+    }
+
+    @PostMapping("/{orderId}/complete")
+    public ResponseEntity<ShipmentResponse> completeShipment(@PathVariable UUID orderId) {
+        Shipment shipment = shipmentService.completeShipment(orderId);
+        return ResponseEntity.ok(ShipmentMapper.toResponse(shipment));
+    }
+
+}

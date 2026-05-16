@@ -1,0 +1,10 @@
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000001, 'Serpost', '51960000001', 'contacto@serpost.com.pe', 'https://www.serpost.com.pe');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000002, 'Olva Courier', '51960000002', 'atencionalcliente@olva.pe', 'https://www.olva.pe');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000003, 'Shalom', '51960000003', 'contacto@shalom.com.pe', 'https://www.shalom.com.pe');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000004, 'Marvisur', '51960000004', 'informes@marvisur.com', 'https://www.marvisur.com');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000005, 'Cruz del Sur Cargo', '51960000005', 'cargo@cruzdelsur.com.pe', 'https://www.cruzdelsurcargo.com.pe');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000006, 'Flores Cargo', '51960000006', 'servicioalcliente@florescargo.com', 'https://www.florescargo.com');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000007, 'FedEx', '51960000007', 'support@fedex.com', 'https://www.fedex.com');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000008, 'DHL', '51960000008', 'customer.service@dhl.com', 'https://www.dhl.com');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000009, 'Amazon Logistics', '51960000009', 'logistics@amazon.com', 'https://logistics.amazon.com');
+INSERT INTO shipping_companies (id, name, phone_number, email, website) VALUES (1000010, 'UPS', '51960000010', 'customer.service@ups.com', 'https://www.ups.com');

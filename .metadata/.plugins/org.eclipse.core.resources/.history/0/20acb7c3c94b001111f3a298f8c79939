@@ -1,0 +1,51 @@
+package com.mitocode.shipment.producer.driver.assigned;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mitocode.shipment.domain.Shipment;
+import com.mitocode.shipment.producer.courier.assigned.event.CourierAssignedEvent;
+import com.mitocode.shipment.producer.courier.assigned.event.ShipmentCompanyEvent;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+@AllArgsConstructor
+public class CourierAssignedProducer {
+
+    private static final String TOPIC = "shipment.courier-assigned.v1";
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ObjectMapper mapper;
+
+    public void produce(Shipment shipment) {
+
+        try {
+            CourierAssignedEvent event = new CourierAssignedEvent();
+            event.setOrderId(shipment.getOrderId().toString());
+            event.setAddress(shipment.getAddress());
+            event.setLatitude(shipment.getLatitude());
+            event.setLongitude(shipment.getLongitude());
+            event.setReference(shipment.getReference());
+            event.setStatus(shipment.getStatus().name());
+
+            ShipmentCompanyEvent company = new ShipmentCompanyEvent();
+            company.setId(shipment.getShipmentCompany().getId());
+            company.setName(shipment.getShipmentCompany().getName());
+            company.setPhoneNumber(shipment.getShipmentCompany().getPhoneNumber());
+            company.setEmail(shipment.getShipmentCompany().getEmail());
+            company.setWebSite(shipment.getShipmentCompany().getWebSite());
+
+            event.setShipmentCompany(company);
+
+            kafkaTemplate.send(TOPIC, shipment.getOrderId().toString(), mapper.writeValueAsString(event));
+
+            log.info("Shipment Assigned Event sent");
+        } catch (Exception ex) {
+            log.error("Error trying to send Shipment Assigned Event", ex);
+        }
+
+    }
+}
+

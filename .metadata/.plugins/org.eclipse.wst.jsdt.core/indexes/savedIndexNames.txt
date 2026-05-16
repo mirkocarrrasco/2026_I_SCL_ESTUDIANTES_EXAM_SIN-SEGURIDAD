@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\Home\Desktop\4. Spring Cloud\WksMicroserviciosSpringCloud_exam_01\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3646653808.index
+982385331.index
+1521403474.index
+2140307321.index
+2122360216.index
+1556793294.index

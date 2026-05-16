@@ -1,0 +1,9 @@
+package com.mitocode.orchestrator.client.shipments.dto;
+
+public record OrderItemResponse(
+        Long productId,
+        String productName,
+        int quantity,
+        String description
+) {
+}

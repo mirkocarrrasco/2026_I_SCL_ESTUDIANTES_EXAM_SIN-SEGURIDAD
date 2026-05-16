@@ -1,0 +1,65 @@
+package com.mitocode.orchestrator.client.shipment.restclient;
+
+import com.mitocode.orchestrator.client.shipment.restclient.dto.AssignCourierRequest;
+import com.mitocode.orchestrator.client.shipment.restclient.dto.ShipmentAddressRequest;
+import com.mitocode.orchestrator.client.shipment.restclient.dto.ShipmentCompanyRequest;
+import com.mitocode.orchestrator.client.shipment.restclient.dto.ShipmentResponse;
+import com.mitocode.orchestrator.controller.dto.CreateOrderOrchestratorRequest;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+
+import java.util.UUID;
+
+@Slf4j
+@Component
+@AllArgsConstructor
+public class ShipmentServiceV1RestClient {
+
+    private final RestClient shipmentRestClient;
+
+    public ShipmentResponse assignCourier(UUID orderId, CreateOrderOrchestratorRequest createOrderRequest) {
+        AssignCourierRequest assignCourierRequest = new AssignCourierRequest(
+                orderId,
+                new ShipmentAddressRequest(
+                        createOrderRequest.deliveryAddress().address(),
+                        createOrderRequest.deliveryAddress().latitude(),
+                        createOrderRequest.deliveryAddress().longitude(),
+                        createOrderRequest.deliveryAddress().reference()
+                ),
+                new ShipmentCompanyRequest(
+                        createOrderRequest.deliveryPerson().id()
+                )
+        );
+
+        return shipmentRestClient.post()
+                .uri("/assign-courier")
+                .body(assignCourierRequest)
+                .retrieve()
+                .body(ShipmentResponse.class);
+    }
+
+    public ResponseEntity<Void> releaseCourier(UUID orderId) {
+        return shipmentRestClient.post()
+                .uri("/{orderId}/release-courier", orderId)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public void startShipment(UUID orderId) {
+        shipmentRestClient.post()
+                .uri("/{orderId}/start", orderId)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public void completeShipment(UUID orderId) {
+        shipmentRestClient.post()
+                .uri("/{orderId}/complete", orderId)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+}

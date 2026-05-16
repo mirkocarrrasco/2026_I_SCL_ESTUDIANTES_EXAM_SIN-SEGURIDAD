@@ -1,0 +1,79 @@
+package com.mitocode.shipment.service;
+
+import com.mitocode.shipment.domain.Shipment;
+import com.mitocode.shipment.domain.ShipmentStatus;
+import com.mitocode.shipment.producer.driver.assigned.DriverAssignedProducer;
+import com.mitocode.shipment.producer.shipment.completed.ShipmentCompletedProducer;
+import com.mitocode.shipment.producer.shipment.started.ShipmentStartedProducer;
+import com.mitocode.shipment.producer.driver.released.DriverReleasedProducer;
+import com.mitocode.shipment.repository.ShipmentCompanyRepository;
+import com.mitocode.shipment.repository.ShipmentRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+@Service
+@AllArgsConstructor
+public class ShipmentService {
+
+    private final ShipmentRepository shipmentRepository;
+    private final ShipmentCompanyRepository shipmentCompanyRepository;
+    private final DriverAssignedProducer driverAssignedProducer;
+    private final ShipmentStartedProducer shipmentStartedProducer;
+    private final ShipmentCompletedProducer shipmentCompletedProducer;
+    private final DriverReleasedProducer driverReleasedProducer;
+
+
+    @Transactional
+    public Shipment assignCourier(Shipment shipment) {
+        shipmentCompanyRepository.getById(shipment.getShipmentCompany().getId())
+                .orElseThrow(() -> new RuntimeException("Shipment person not found"));
+
+        shipment.setStatus(ShipmentStatus.ASSIGNED);
+
+        Shipment saved = shipmentRepository.save(shipment);
+
+        driverAssignedProducer.produce(saved);
+
+        return saved;
+        //return shipmentRepository.findByIdWithShipmentCompany(saved.getId()).orElseThrow(() -> new RuntimeException("Error getting Shipment"));
+    }
+
+    @Transactional
+    public Shipment releaseDriver(UUID orderId) {
+        Shipment shipment = shipmentRepository.getByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+
+        shipment.setStatus(ShipmentStatus.CANCELLED);
+
+        Shipment saved = shipmentRepository.save(shipment);
+
+        driverReleasedProducer.produce(saved);
+
+        return saved;
+        //return shipmentRepository.findByIdWithShipmentCompany(saved.getId()).orElseThrow(() -> new RuntimeException("Error getting Shipment"));
+    }
+
+    @Transactional
+    public Shipment startShipment(UUID orderId) {
+        Shipment shipment = shipmentRepository.getByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+        shipment.setStatus(ShipmentStatus.STARTED);
+        Shipment updated = shipmentRepository.save(shipment);
+        shipmentStartedProducer.produce(updated);
+        return updated;
+    }
+
+    @Transactional
+    public Shipment completeShipment(UUID orderId) {
+        Shipment shipment = shipmentRepository.getByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+        shipment.setStatus(ShipmentStatus.COMPLETED);
+        Shipment updated =  shipmentRepository.save(shipment);
+        shipmentCompletedProducer.produce(updated);
+        return updated;
+    }
+
+}

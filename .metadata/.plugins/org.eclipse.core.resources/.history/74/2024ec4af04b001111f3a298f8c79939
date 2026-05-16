@@ -1,0 +1,69 @@
+package com.mitocode.orchestrator.controller.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Schema(
+        description = "Datos para crear un pedido",
+        example = """
+{
+    "customer": {
+        "id": 9996,
+        "name": "Andres Gonzales"
+    },
+    "warehouse": {
+        "id": 1000,
+        "name": "Centro de Distribución Norte"
+    },
+    "card": {
+        "id": 111
+    },
+    "items": [
+        {
+            "product": {
+                "id": 956,
+                "name": "Pizza Pepperoni"
+            },
+            "quantity": 2,
+            "description": "Extra queso"
+        },
+        {
+            "product": {
+                "id": 985,
+                "name": "Coca Cola"
+            },
+            "quantity": 1,
+            "description": "Sin hielo"
+        }
+    ],
+    "deliveryAddress": {
+        "address": "Calle Los Angeles 706, Departamento 125",
+        "latitude": 9636666,
+        "longitude": 698897,
+        "reference": "Al frente del parque de las leyendas puerta 5"
+    },
+    "deliveryPerson": {
+        "id": 1000007
+    },
+    "total": 109.25
+}
+"""
+)
+public record CreateOrderOrchestratorRequest(
+        @Schema(description = "Informacion del cliente")
+        CustomerRequest customer,
+        @Schema(description = "Informacion de la tarjeta")
+        CardRequest card,
+        @Schema(description = "Informacion del warehouse")
+        WarehouseRequest warehouse,
+        @Schema(description = "Lista de items del pedido")
+        List<OrderItemRequest> items,
+        @Schema(description = "Informacion de la direccion de entrega")
+        DeliveryAddress deliveryAddress,
+        @Schema(description = "Informacion del repartidor")
+        ShipmentCompany deliveryPerson,
+        @Schema(description = "Total del pedido", nullable = false, requiredMode = Schema.RequiredMode.REQUIRED, maximum = "99999.99")
+        BigDecimal total
+) {}

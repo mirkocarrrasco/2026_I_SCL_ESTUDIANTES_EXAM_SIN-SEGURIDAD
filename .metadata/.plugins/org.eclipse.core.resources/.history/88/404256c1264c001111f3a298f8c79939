@@ -1,0 +1,9 @@
+package com.mitocode.order.listener.driver.released.event;
+
+import lombok.Data;
+
+@Data
+public class CourierReleasedEvent {
+    private String orderId;
+    private String status;
+}

@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          #uri: https://github.com/mitocode21/2026_I_SCL_ESTUDIANTES.git
+          #uri: https://github.com/mirkocarrrasco/2026_I_SCL_ESTUDIANTES.git
+          uri: https://github.com/mirkocarrrasco/2026_I_SCL_ESTUDIANTES_EXAM.git
+          search-paths: infra/config-server-properties
+          clone-on-start: true
+          default-label: main
+          #username: agonzalesr93
+          #username: mirkocarrrasco
+          username: mirkocarrrasco
+          #Para generar el token ir a https://github.com/settings/tokens
+          #password: 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
+          #password: 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
+          password: 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
+          force-pull: true

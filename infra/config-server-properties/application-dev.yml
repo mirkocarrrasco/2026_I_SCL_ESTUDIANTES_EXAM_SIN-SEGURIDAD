@@ -1,0 +1,53 @@
+
+http-clients:
+  internal:
+    api-order-service-v1:
+      base-url: http://api-order-service-v1/api/v1/orders
+      timeout: 5s
+    api-payment-service-v1:
+      base-url: http://api-payment-service-v1/api/v1/payments
+      timeout: 5s
+    api-payment-service-v2:
+      base-url: http://api-payment-service-v2/api/v2/payments
+      timeout: 5s
+    api-inventory-service-v1:
+      base-url: http://api-inventory-service-v1/api/v1/inventories
+      timeout: 5s
+    api-inventory-service-v2:
+      base-url: http://api-inventory-service-v2/api/v2/inventories
+      timeout: 5s
+    api-shipment-service-v1:
+      base-url: http://api-shipment-service-v1/api/v1/shipment
+      timeout: 5s
+  external:
+    api-visa-v1:
+      base-url: http://localhost:52010/api/visa
+      timeout: 5s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        #include: health, info, prometheus
+        include: "*" # Exponer todos los endpoints (en producción, es mejor limitar esto a solo los necesarios)
+      base-path: /actuator
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+  otlp:
+    metrics:
+      export:
+        enabled: false
+  tracing:
+    sampling:
+      probability: 1.0 # 100% de las trazas serán muestreadas (en producción, es recomendable reducir esto para evitar sobrecargar el sistema)
